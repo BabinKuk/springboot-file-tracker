@@ -360,7 +360,7 @@ public class FileControllerTest {
 			.andExpect(jsonPath("$.fileDesc", is(fileDesc))) // verify json element
 			;
 		
-		// update image with id=22 (non existing)
+		// update file with id=22 (non existing)
 		mockMvc.perform(MockMvcRequestBuilders.put(ROOT + FILES + "/{id}", 22)
 				.param(VALIDATION_ROLE, validationRole)
 				.param(FILE_NAME, fileName)
@@ -408,8 +408,23 @@ public class FileControllerTest {
 			.andExpect(status().isBadRequest()) // verify json root element status $ is 400 BAD_REQUEST
 			.andExpect(jsonPath("$.message", is(MessagePool.getMessage(ValidatorCodes.VALIDATION_FAILED.getMessage())))) // verify json element
 			.andExpect(jsonPath("$.errors", hasSize(1))) // verify json element
-			.andExpect(jsonPath("$.errors", contains(MessagePool.getMessage(ValidatorCodes.ERROR_CODE_IMAGE_NAME_EMPTY.getMessage())))) // verify json element
+			.andExpect(jsonPath("$.errors", contains(MessagePool.getMessage(ValidatorCodes.ERROR_CODE_FILE_DESC_EMPTY.getMessage())))) // verify json element
 			;
+		
+		// update image id=1 with invalid description (already exist in db)
+		mockMvc.perform(MockMvcRequestBuilders.put(ROOT + FILES + "/{id}", 1)
+				.param(VALIDATION_ROLE, validationRole)
+				.param(FILE_NAME, FILE_2)
+				.param(IMAGE_NAME, DESC_2)
+				.contentType(APPLICATION_JSON_UTF8)
+			).andDo(MockMvcResultHandlers.print())
+			.andExpect(status().is4xxClientError())
+			.andExpect(status().isBadRequest()) // verify json root element status $ is 400 BAD_REQUEST
+			.andExpect(jsonPath("$.message", is(MessagePool.getMessage(ValidatorCodes.VALIDATION_FAILED.getMessage())))) // verify json element
+			.andExpect(jsonPath("$.errors", hasSize(1))) // verify json element
+			.andExpect(jsonPath("$.errors", contains(MessagePool.getMessage(ValidatorCodes.ERROR_CODE_FILE_DESC_ALREADY_EXIST.getMessage())))) // verify json element
+			;
+	
 	}
 	
 	@Test

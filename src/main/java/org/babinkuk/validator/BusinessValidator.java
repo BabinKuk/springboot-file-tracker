@@ -29,21 +29,20 @@ public class BusinessValidator {
 	 * @throws ValidationException
 	 */
 	public void validateFile(FileVO vo) throws ValidatorException {
-		log.info("validateFile {}", vo);
 		validateStringIsBlank(vo.getFileName(), ValidatorCodes.ERROR_CODE_FILE_NAME_EMPTY);
-		validateStringIsBlank(vo.getFileDesc(), ValidatorCodes.ERROR_CODE_IMAGE_NAME_EMPTY);
-		titleExists(vo);
+		validateStringIsBlank(vo.getFileDesc(), ValidatorCodes.ERROR_CODE_FILE_DESC_EMPTY);
+		descriptionExists(vo);
 	}
 	
 	/**
-	 * validate if image name already exist 
-	 * must be unique (call repository findByImageName)
+	 * validate if file description already exist 
+	 * must be unique (call repository findByFileDesc)
 	 * 
 	 * @param vo
 	 * @return
 	 * @throws ValidatorException
 	 */
-	public void titleExists(FileVO vo) throws ValidatorException {
+	public void descriptionExists(FileVO vo) throws ValidatorException {
 		FileVO dbVO = null;
 		
 		dbVO = fileService.findByFileDesc(vo.getFileDesc());
@@ -59,8 +58,8 @@ public class BusinessValidator {
 				log.warn("belongs to same file, nothing has not changed");
 			} else {
 				// another course with same title already exists in db
-				log.error(ValidatorCodes.ERROR_CODE_IMAGE_NAME_ALREADY_EXIST.getMessage());
-				throw new ValidatorException(ValidatorCodes.ERROR_CODE_IMAGE_NAME_ALREADY_EXIST);
+				log.error(ValidatorCodes.ERROR_CODE_FILE_DESC_ALREADY_EXIST.getMessage());
+				throw new ValidatorException(ValidatorCodes.ERROR_CODE_FILE_DESC_ALREADY_EXIST);
 			}
 		}
 	}
@@ -91,7 +90,6 @@ public class BusinessValidator {
 	 * @throws ValidatorException
 	 */
 	private void validateStringIsBlank(String str, ValidatorCodes errorCode) throws ValidatorException {
-		log.info("validateStringIsBlank {}", str);
 		if (StringUtils.isBlank(str)) {
 			throw new ValidatorException(errorCode);
 		}

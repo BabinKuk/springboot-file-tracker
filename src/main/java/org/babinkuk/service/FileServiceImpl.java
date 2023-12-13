@@ -182,7 +182,7 @@ public class FileServiceImpl implements FileService {
 			//log.info("imageVO ({})", imageVO);
 		} else {
 			// not found
-			String message = String.format(MessagePool.getMessage(ValidatorCodes.ERROR_CODE_IMAGE_NAME_NOT_FOUND.getMessage()), name);
+			String message = String.format(MessagePool.getMessage(ValidatorCodes.ERROR_CODE_FILE_DESC_NOT_FOUND.getMessage()), name);
 			log.warn(message);
 			//throw new ObjectNotFoundException(message);
 		}
